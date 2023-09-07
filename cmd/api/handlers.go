@@ -41,13 +41,13 @@ func (app *application) getCreateBooksHandler(w http.ResponseWriter, r *http.Req
 				Published: 2012,
 				Pages:     500,
 				Genres:    []string{"programming", "development"},
-				Rating:    4.99,
-				Version:   1,
+				// Rating:    4.99,
+				Version: 1,
 			},
 			{
 				ID:        2,
 				CreatedAt: time.Now(),
-				Title:     "The Go Programming Language 2",
+				Title:     "The Go Programming Language 1.20",
 				Published: 2022,
 				Pages:     500,
 				Genres:    []string{"programming", "development"},
@@ -55,16 +55,10 @@ func (app *application) getCreateBooksHandler(w http.ResponseWriter, r *http.Req
 				Version:   1,
 			},
 		}
-		js, err := json.Marshal(books)
-		if err != nil {
+		if err := app.writeJSON(w, http.StatusOK, books, nil); err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-
-		js = append(js, '\n')
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(js)
-		return
 	}
 	if r.Method == http.MethodPost {
 		fmt.Fprintln(w, "Create a new book to the reading list")
@@ -101,14 +95,19 @@ func (app *application) getBook(w http.ResponseWriter, r *http.Request) {
 		Version:   1,
 	}
 
-	js, err := json.Marshal(book)
-	if err != nil {
+	// js, err := json.Marshal(book)
+	// if err != nil {
+	// 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	// 	return
+	// }
+	// js = append(js, '\n')
+	// w.Header().Set("Content-Type", "application/json")
+	// w.Write(js)
+
+	if err := app.writeJSON(w, http.StatusOK, book, nil); err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	js = append(js, '\n')
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
 }
 
 func (app *application) updateBook(w http.ResponseWriter, r *http.Request) {
